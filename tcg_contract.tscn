@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://cqfe6oud5yiwa"]
+
+[ext_resource type="Script" path="res://tcg_contract.gd" id="1_wh2um"]
+
+[node name="TCGContract" type="Node"]
+script = ExtResource("1_wh2um")
