@@ -35,11 +35,10 @@ func _process(delta: float) -> void:
 	pass
 
 
-func get_account_inventory():
-	pass
-
-
 func _on_get_cards_pressed() -> void:
+	for n in card_scroll.get_children():
+		n.queue_free()
+		
 	var addr = accounts_dropdown.get_item_text(accounts_dropdown.selected)
 	var cards = tcg_contract.get_inventory(addr)[0]
 	for card in cards:
