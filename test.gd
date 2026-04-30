@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var accounts_dropdown: OptionButton = $VBoxContainer/Accounts
 @onready var tcg_contract: TCGContract = $TCGContract
+const CARD_CONTAINER = preload("res://card_container.tscn")
+@onready var card_scroll: HBoxContainer = $ScrollContainer/HBoxContainer
 
 var accounts : Array[String] = [
 	"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -39,7 +41,13 @@ func get_account_inventory():
 
 func _on_get_cards_pressed() -> void:
 	var addr = accounts_dropdown.get_item_text(accounts_dropdown.selected)
-	tcg_contract.get_inventory(addr)
+	var cards = tcg_contract.get_inventory(addr)[0]
+	for card in cards:
+		print("has value: " + card)
+		var instance = CARD_CONTAINER.instantiate()
+		card_scroll.add_child(instance)
+		var stats = tcg_contract.get_card_stats(card.to_int())
+		instance.setup(stats)
 
 func _on_mint_card_pressed() -> void:
 	var addr = accounts_dropdown.get_item_text(accounts_dropdown.selected)

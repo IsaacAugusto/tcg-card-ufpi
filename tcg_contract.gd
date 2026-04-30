@@ -20,7 +20,7 @@ func _ready():
 	#get_card_stats(1)
 
 # --- GET INVENTORY (UPDATED WITH DOUBLE-PARSE) ---
-func get_inventory(player_addr: String):
+func get_inventory(player_addr: String) -> Array:
 	var packed = abi.pack("getPlayerCards", [player_addr])
 	
 	var call_msg = {
@@ -52,7 +52,7 @@ func get_inventory(player_addr: String):
 				print("Unpack Inventory Error: ", err)
 	return []
 
-func get_card_stats(token_id: int):
+func get_card_stats(token_id: int) -> Dictionary:
 	# 1. Prepare the call message
 	var packed_data = abi.pack("getCardStats", [token_id])
 	var call_msg = {
@@ -91,12 +91,14 @@ func get_card_stats(token_id: int):
 				print("Speed: ", stats_result.get("speed", 0))
 				print("Stamina: ", stats_result.get("stamina", 0))
 				print("Magic: ", stats_result.get("magic", 0))
+				return stats_result
 			else:
 				print("Unpack Error code: ", err)
 		else:
 			print("RPC Error: No result in body.")
 	else:
 		print("Library Error: No response_body.")
+	return {}
 
 # --- MINT CARD (CLEANED UP SIGNATURES) ---
 func mint_card(to_address: String, uri: String, private_key_hex: String):
