@@ -8,21 +8,6 @@ script = ExtResource("1_1t8mj")
 
 [node name="TCGContract" parent="." instance=ExtResource("1_q8vob")]
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = -359.0
-offset_top = -337.0
-offset_right = -104.0
-offset_bottom = -241.93
-grow_horizontal = 2
-grow_vertical = 2
-
-[node name="Accounts" type="OptionButton" parent="VBoxContainer"]
-layout_mode = 2
-alignment = 2
-
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -43,6 +28,17 @@ text = "Get Player Cards"
 [node name="Button2" type="Button" parent="Control/HBoxContainer"]
 layout_mode = 2
 text = "Mint Card to Player"
+
+[node name="Button3" type="Button" parent="Control/HBoxContainer"]
+layout_mode = 2
+text = "Transfer Card"
+
+[node name="Label" type="Label" parent="Control"]
+layout_mode = 0
+offset_left = -475.0
+offset_top = -337.0
+offset_right = -435.0
+offset_bottom = -314.0
 
 [node name="Camera2D" type="Camera2D" parent="."]
 
@@ -67,3 +63,4 @@ size_flags_vertical = 3
 
 [connection signal="pressed" from="Control/HBoxContainer/Button" to="." method="_on_get_cards_pressed"]
 [connection signal="pressed" from="Control/HBoxContainer/Button2" to="." method="_on_mint_card_pressed"]
+[connection signal="pressed" from="Control/HBoxContainer/Button3" to="." method="_on_transfer_pressed"]

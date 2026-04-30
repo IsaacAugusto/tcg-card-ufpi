@@ -1,9 +1,10 @@
 extends Node2D
 
-@onready var accounts_dropdown: OptionButton = $VBoxContainer/Accounts
+@onready var label: Label = $Control/Label
 @onready var tcg_contract: TCGContract = $TCGContract
 const CARD_CONTAINER = preload("res://card_container.tscn")
 @onready var card_scroll: HBoxContainer = $ScrollContainer/HBoxContainer
+const DROPDOWN = preload("res://dropdown.tscn")
 
 var accounts : Array[String] = [
 	"0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266",
@@ -21,16 +22,9 @@ var keys : Array[String] = [
 	"0x47e179ec197488593b187f80a00eb0da91f1b9d0b13f8733639f19c30a34926a"
 ]
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	setup_dropdowns()
+	pass
 
-func setup_dropdowns():
-	accounts_dropdown.clear()
-	for acc in accounts:
-		accounts_dropdown.add_item(acc)
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	pass
 
@@ -38,17 +32,49 @@ func _process(delta: float) -> void:
 func _on_get_cards_pressed() -> void:
 	for n in card_scroll.get_children():
 		n.queue_free()
-		
-	var addr = accounts_dropdown.get_item_text(accounts_dropdown.selected)
-	var cards = tcg_contract.get_inventory(addr)[0]
+	
+	var from = await ask_for_account("Deseja ver as cartas de quem?")
+	label.text = "Inventário de: " + from
+	var cards = tcg_contract.get_inventory(from)[0]
 	for card in cards:
-		print("has value: " + card)
 		var instance = CARD_CONTAINER.instantiate()
 		card_scroll.add_child(instance)
 		var stats = tcg_contract.get_card_stats(card.to_int())
-		instance.setup(stats)
+		instance.setup(card, stats)
 
 func _on_mint_card_pressed() -> void:
-	var addr = accounts_dropdown.get_item_text(accounts_dropdown.selected)
-	var key = keys[accounts_dropdown.selected]
-	tcg_contract.mint_card(addr, "Teste", key)
+	var from = await ask_for_account("Selecione o dono do contrato")
+	var index = accounts.find(from);
+	if (index != 0):
+		return
+	var to = await ask_for_account("Selecione a conta destino do mint")
+	var key = keys[index]
+	tcg_contract.mint_card(to, "Teste", key)
+
+func _on_transfer_pressed() -> void:
+	var from = await ask_for_account("Selecione quem irá transferir a carta")
+	var card = await ask_which_card(from)
+	print("transfering: " + str(card))
+	var to = await ask_for_account("Selecione quem irá receber a carta")
+	var index = accounts.find(from)
+	var key = keys[index]
+	tcg_contract.transfer_card(from, to, card, key)
+
+func ask_for_account(label: String) -> String:
+	var instance = DROPDOWN.instantiate() as ChooseDropdown
+	add_child(instance)
+	instance.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	instance.setup(label, accounts)
+	var from = await instance.OnSelected
+	instance.queue_free()
+	return from
+
+func ask_which_card(account: String) -> int:
+	var cards = tcg_contract.get_inventory(account)[0]
+	var instance = DROPDOWN.instantiate() as ChooseDropdown
+	add_child(instance)
+	instance.set_anchors_and_offsets_preset(Control.PRESET_CENTER)
+	instance.setup("Escolha a carta a ser transferida", cards)
+	var selected = await instance.OnSelected
+	instance.queue_free()
+	return selected.to_int()

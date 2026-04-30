@@ -25,7 +25,7 @@ contract TCGCard is ERC721, ERC721URIStorage, ERC721Burnable, Ownable {
         uint256 deffence    = (randomHash >> 8) % 256;
         uint256 speed = (randomHash >> 16) % 256;
         uint256 stamina     = (randomHash >> 24) % 256;
-        uint256 magic     = (randomHash >> 32) % 256; // O nosso 5º atributo!
+        uint256 magic     = (randomHash >> 32) % 256;
 
         uint256 packedStats = (magic << 32) | (stamina << 24) | (speed << 16) | (deffence << 8) | attack;
 

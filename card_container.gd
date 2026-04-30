@@ -11,9 +11,9 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func setup(details: Dictionary) -> void:
-	label.text = ""
-	label.text += "Attack: " + details.get("attack", 0)
+func setup(id: String, details: Dictionary) -> void:
+	label.text = "ID: " + id
+	label.text += "\nAttack: " + details.get("attack", 0)
 	label.text += "\nDefense: " + details.get("deffence", 0)
 	label.text += "\nSpeed: " + details.get("speed", 0)
 	label.text += "\nStamina: " + details.get("stamina", 0)
